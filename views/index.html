@@ -6,15 +6,16 @@
 </head>
 <body>
 <div>F12를 눌러 console 탭과 network 탭을 확인하세요.</div>
+<script src="/socket.io/socket.io.js"></script>
 <script>
-  const webSocket = new WebSocket("ws://localhost:8005");
-  webSocket.onopen = function () {
-    console.log('서버와 웹소켓 연결 성공!');
-  };
-  webSocket.onmessage = function (event) {
-    console.log(event.data);
-    webSocket.send('클라이언트에서 서버로 답장을 보냅니다');
-  };
+  const socket = io.connect('http://localhost:8005', {
+    path: '/socket.io', //path와 일치해야 동신 가능
+    transports:['websocket'], //폴링방식 없이 처음부터 웹 소켓만 사용하는 옵션
+  });
+  socket.on('news', function(data) { //뉴스 이벤트를 받는 부분
+    console.log(data);
+    socket.emit('reply', 'Hello Node Js');
+  })
 </script>
 </body>
 </html>
